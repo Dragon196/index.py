@@ -1,0 +1,232 @@
+<html>
+<head>
+<title>Snake Game.py</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6897bb;}
+.s3 { color: #808080;}
+.s4 { color: #6a8759;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Snake Game.py</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">turtle</span>
+<span class="s0">import </span><span class="s1">time</span>
+<span class="s0">import </span><span class="s1">random</span>
+
+<span class="s1">delay = </span><span class="s2">0.1</span>
+
+<span class="s3"># Score</span>
+<span class="s1">score = </span><span class="s2">0</span>
+<span class="s1">high_score = </span><span class="s2">0</span>
+
+
+<span class="s3"># Set up the screen</span>
+<span class="s1">wn = turtle.Screen()</span>
+<span class="s1">wn.title(</span><span class="s4">&quot;Snake Game&quot;</span><span class="s1">)</span>
+<span class="s1">wn.bgcolor(</span><span class="s4">&quot;black&quot;</span><span class="s1">)</span>
+<span class="s1">wn.setup(width=</span><span class="s2">600</span><span class="s0">, </span><span class="s1">height=</span><span class="s2">600</span><span class="s1">)</span>
+<span class="s1">wn.tracer(</span><span class="s2">0</span><span class="s1">)</span>
+
+<span class="s3"># Snake Head</span>
+<span class="s1">head = turtle.Turtle()</span>
+<span class="s1">head.speed(</span><span class="s2">0</span><span class="s1">)</span>
+<span class="s1">head.shape(</span><span class="s4">&quot;square&quot;</span><span class="s1">)</span>
+<span class="s1">head.color(</span><span class="s4">&quot;red&quot;</span><span class="s1">)</span>
+<span class="s1">head.penup()</span>
+<span class="s1">head.goto(</span><span class="s2">0</span><span class="s0">,</span><span class="s2">0</span><span class="s1">)</span>
+<span class="s1">head.direction = </span><span class="s4">&quot;stop&quot;</span>
+
+<span class="s3"># Food</span>
+<span class="s1">food = turtle.Turtle()</span>
+<span class="s1">food.speed(</span><span class="s2">0</span><span class="s1">)</span>
+<span class="s1">food.shape(</span><span class="s4">&quot;circle&quot;</span><span class="s1">)</span>
+<span class="s1">food.color(</span><span class="s4">&quot;blue&quot;</span><span class="s1">)</span>
+<span class="s1">food.penup()</span>
+<span class="s1">food.goto(</span><span class="s2">0</span><span class="s0">,</span><span class="s2">100</span><span class="s1">)</span>
+
+<span class="s1">segments = []</span>
+
+<span class="s3"># Pen</span>
+<span class="s1">pen = turtle.Turtle()</span>
+<span class="s1">pen.speed(</span><span class="s2">0</span><span class="s1">)</span>
+<span class="s1">pen.shape(</span><span class="s4">&quot;square&quot;</span><span class="s1">)</span>
+<span class="s1">pen.color(</span><span class="s4">&quot;white&quot;</span><span class="s1">)</span>
+<span class="s1">pen.penup()</span>
+<span class="s1">pen.hideturtle()</span>
+<span class="s1">pen.goto(</span><span class="s2">0</span><span class="s0">, </span><span class="s2">260</span><span class="s1">)</span>
+<span class="s1">pen.write(</span><span class="s4">&quot;Score: 0 High Score: 0&quot;</span><span class="s0">, </span><span class="s1">align=</span><span class="s4">&quot;center&quot;</span><span class="s0">, </span><span class="s1">font=(</span><span class="s4">&quot;Courier&quot;</span><span class="s0">, </span><span class="s2">24</span><span class="s0">,</span><span class="s4">&quot;normal&quot;</span><span class="s1">))</span>
+
+<span class="s3"># Functions</span>
+<span class="s0">def </span><span class="s1">move():</span>
+    <span class="s0">if </span><span class="s1">head.direction == </span><span class="s4">&quot;up&quot;</span><span class="s1">:</span>
+        <span class="s1">y = head.ycor()</span>
+        <span class="s1">head.sety(y + </span><span class="s2">20</span><span class="s1">)</span>
+
+    <span class="s0">if </span><span class="s1">head.direction == </span><span class="s4">&quot;down&quot;</span><span class="s1">:</span>
+        <span class="s1">y = head.ycor()</span>
+        <span class="s1">head.sety(y - </span><span class="s2">20</span><span class="s1">)</span>
+
+    <span class="s0">if </span><span class="s1">head.direction == </span><span class="s4">&quot;left&quot;</span><span class="s1">:</span>
+        <span class="s1">x = head.xcor()</span>
+        <span class="s1">head.setx(x - </span><span class="s2">20</span><span class="s1">)</span>
+
+    <span class="s0">if </span><span class="s1">head.direction == </span><span class="s4">&quot;right&quot;</span><span class="s1">:</span>
+        <span class="s1">x = head.xcor()</span>
+        <span class="s1">head.setx(x + </span><span class="s2">20</span><span class="s1">)</span>
+
+    <span class="s0">if </span><span class="s1">head.direction == </span><span class="s4">&quot;go_speed&quot;</span><span class="s1">:</span>
+        <span class="s1">y = head.ycor()</span>
+        <span class="s1">head.sety(y - </span><span class="s2">25</span><span class="s1">)</span>
+
+    <span class="s0">if </span><span class="s1">head.direction == </span><span class="s4">&quot;go_speed1&quot;</span><span class="s1">:</span>
+        <span class="s1">y = head.ycor()</span>
+        <span class="s1">head.sety(y + </span><span class="s2">25</span><span class="s1">)</span>
+
+    <span class="s0">if </span><span class="s1">head.direction == </span><span class="s4">&quot;go_speed2&quot;</span><span class="s1">:</span>
+        <span class="s1">x = head.xcor()</span>
+        <span class="s1">head.setx(x - </span><span class="s2">25</span><span class="s1">)</span>
+
+    <span class="s0">if </span><span class="s1">head.direction == </span><span class="s4">&quot;go_speed3&quot;</span><span class="s1">:</span>
+        <span class="s1">x = head.xcor()</span>
+        <span class="s1">head.setx(x + </span><span class="s2">25</span><span class="s1">)</span>
+
+<span class="s3"># Functions</span>
+<span class="s0">def </span><span class="s1">go_up():</span>
+    <span class="s0">if </span><span class="s1">head.direction != </span><span class="s4">&quot;down&quot;</span><span class="s1">:</span>
+     <span class="s1">head.direction = </span><span class="s4">&quot;up&quot;</span>
+
+<span class="s0">def </span><span class="s1">go_down():</span>
+    <span class="s0">if </span><span class="s1">head.direction != </span><span class="s4">&quot;up&quot;</span><span class="s1">:</span>
+     <span class="s1">head.direction = </span><span class="s4">&quot;down&quot;</span>
+
+<span class="s0">def </span><span class="s1">go_left():</span>
+    <span class="s0">if </span><span class="s1">head.direction != </span><span class="s4">&quot;right&quot;</span><span class="s1">:</span>
+     <span class="s1">head.direction = </span><span class="s4">&quot;left&quot;</span>
+
+<span class="s0">def </span><span class="s1">go_right():</span>
+    <span class="s0">if </span><span class="s1">head.direction != </span><span class="s4">&quot;left&quot;</span><span class="s1">:</span>
+     <span class="s1">head.direction = </span><span class="s4">&quot;right&quot;</span>
+
+<span class="s0">def </span><span class="s1">go_speed():</span>
+    <span class="s0">if </span><span class="s1">head.direction != </span><span class="s4">&quot;down&quot;</span><span class="s1">:</span>
+     <span class="s1">head.direction = </span><span class="s4">&quot;up&quot;</span>
+
+<span class="s0">def </span><span class="s1">go_speed1():</span>
+    <span class="s0">if </span><span class="s1">head.direction != </span><span class="s4">&quot;right&quot;</span><span class="s1">:</span>
+     <span class="s1">head.direction = </span><span class="s4">&quot;left&quot;</span>
+
+<span class="s0">def </span><span class="s1">go_speed2():</span>
+    <span class="s0">if </span><span class="s1">head.direction != </span><span class="s4">&quot;up&quot;</span><span class="s1">:</span>
+     <span class="s1">head.direction = </span><span class="s4">&quot;down&quot;</span>
+
+<span class="s0">def </span><span class="s1">go_speed3():</span>
+    <span class="s0">if </span><span class="s1">head.direction != </span><span class="s4">&quot;left&quot;</span><span class="s1">:</span>
+     <span class="s1">head.direction = </span><span class="s4">&quot;right&quot;</span>
+
+<span class="s3"># Keyboard Bindings</span>
+<span class="s1">wn.listen()</span>
+<span class="s1">wn.onkeypress(go_up</span><span class="s0">, </span><span class="s4">&quot;Up&quot;</span><span class="s1">)</span>
+<span class="s1">wn.onkeypress(go_down</span><span class="s0">, </span><span class="s4">&quot;Down&quot;</span><span class="s1">)</span>
+<span class="s1">wn.onkeypress(go_right</span><span class="s0">, </span><span class="s4">&quot;Right&quot;</span><span class="s1">)</span>
+<span class="s1">wn.onkeypress(go_left</span><span class="s0">, </span><span class="s4">&quot;Left&quot;</span><span class="s1">)</span>
+<span class="s1">wn.onkeypress(go_speed</span><span class="s0">, </span><span class="s4">&quot;w&quot;</span><span class="s1">)</span>
+<span class="s1">wn.onkeypress(go_speed1</span><span class="s0">, </span><span class="s4">&quot;a&quot;</span><span class="s1">)</span>
+<span class="s1">wn.onkeypress(go_speed2</span><span class="s0">, </span><span class="s4">&quot;s&quot;</span><span class="s1">)</span>
+<span class="s1">wn.onkeypress(go_speed3</span><span class="s0">, </span><span class="s4">&quot;d&quot;</span><span class="s1">)</span>
+
+<span class="s3"># Main Gameloop</span>
+<span class="s0">while True</span><span class="s1">:</span>
+    <span class="s1">wn.update()</span>
+
+    <span class="s3"># Check for collision with the border</span>
+    <span class="s0">if </span><span class="s1">head.xcor()&gt;</span><span class="s2">290 </span><span class="s0">or </span><span class="s1">head.xcor()&lt;-</span><span class="s2">290 </span><span class="s0">or </span><span class="s1">head.ycor()&gt;</span><span class="s2">290 </span><span class="s0">or </span><span class="s1">head.ycor()&lt;-</span><span class="s2">290</span><span class="s1">:</span>
+        <span class="s1">time.sleep(</span><span class="s2">1</span><span class="s1">)</span>
+        <span class="s1">head.goto(</span><span class="s2">0</span><span class="s0">, </span><span class="s2">0</span><span class="s1">)</span>
+        <span class="s1">head.direction = </span><span class="s4">&quot;stop&quot;</span>
+
+        <span class="s3"># Hide the segments</span>
+        <span class="s0">for </span><span class="s1">segment </span><span class="s0">in </span><span class="s1">segments:</span>
+            <span class="s1">segment.goto(</span><span class="s2">1000</span><span class="s0">, </span><span class="s2">1000</span><span class="s1">)</span>
+
+        <span class="s3"># Clear th segments list</span>
+        <span class="s1">segments.clear()</span>
+
+        <span class="s3"># Reset the score</span>
+        <span class="s1">score = </span><span class="s2">0</span>
+
+        <span class="s1">pen.clear()</span>
+        <span class="s1">pen.write(</span><span class="s4">&quot;Score: {} High Score: {}&quot;</span><span class="s1">.format(score</span><span class="s0">, </span><span class="s1">high_score)</span><span class="s0">, </span><span class="s1">align=</span><span class="s4">&quot;center&quot;</span><span class="s0">, </span><span class="s1">font=(</span><span class="s4">&quot;Courier&quot;</span><span class="s0">, </span><span class="s2">24</span><span class="s0">, </span><span class="s4">&quot;normal&quot;</span><span class="s1">))</span>
+
+
+
+    <span class="s3"># Check for a collision with food</span>
+    <span class="s0">if </span><span class="s1">head.distance(food) &lt; </span><span class="s2">20</span><span class="s1">:</span>
+        <span class="s3"># Move the food to a random spot</span>
+        <span class="s1">x = random.randint(-</span><span class="s2">290</span><span class="s0">, </span><span class="s2">290</span><span class="s1">)</span>
+        <span class="s1">y = random.randint(-</span><span class="s2">290</span><span class="s0">, </span><span class="s2">290</span><span class="s1">)</span>
+        <span class="s1">food.goto(x</span><span class="s0">,</span><span class="s1">y)</span>
+
+        <span class="s3"># Add a segment</span>
+        <span class="s1">new_segment = turtle.Turtle()</span>
+        <span class="s1">new_segment.speed(</span><span class="s2">0</span><span class="s1">)</span>
+        <span class="s1">new_segment.shape(</span><span class="s4">&quot;square&quot;</span><span class="s1">)</span>
+        <span class="s1">new_segment.color(</span><span class="s4">&quot;grey&quot;</span><span class="s1">)</span>
+        <span class="s1">new_segment.penup()</span>
+        <span class="s1">segments.append(new_segment)</span>
+
+        <span class="s3"># increase the score</span>
+        <span class="s1">score += </span><span class="s2">10</span>
+
+        <span class="s0">if </span><span class="s1">score &gt; high_score:</span>
+            <span class="s1">high_score = score</span>
+
+        <span class="s1">pen.clear()</span>
+        <span class="s1">pen.write(</span><span class="s4">&quot;Score: {} High Score: {}&quot;</span><span class="s1">.format(score</span><span class="s0">, </span><span class="s1">high_score) </span><span class="s0">, </span><span class="s1">align=</span><span class="s4">&quot;center&quot;</span><span class="s0">, </span><span class="s1">font=(</span><span class="s4">&quot;Courier&quot;</span><span class="s0">, </span><span class="s2">24</span><span class="s0">, </span><span class="s4">&quot;normal&quot;</span><span class="s1">))</span>
+
+    <span class="s3"># Move the end segments in reverse order</span>
+    <span class="s0">for </span><span class="s1">index </span><span class="s0">in </span><span class="s1">range(len(segments) -</span><span class="s2">1</span><span class="s0">, </span><span class="s2">0</span><span class="s0">, </span><span class="s1">-</span><span class="s2">1 </span><span class="s1">):</span>
+        <span class="s1">x = segments[index-</span><span class="s2">1</span><span class="s1">].xcor()</span>
+        <span class="s1">y = segments[index-</span><span class="s2">1</span><span class="s1">].ycor()</span>
+        <span class="s1">segments[index].goto(x</span><span class="s0">, </span><span class="s1">y)</span>
+
+    <span class="s3"># Move segment 0 to where head is</span>
+    <span class="s0">if </span><span class="s1">len(segments) &gt; </span><span class="s2">0</span><span class="s1">:</span>
+        <span class="s1">x = head.xcor()</span>
+        <span class="s1">y = head.ycor()</span>
+        <span class="s1">segments[</span><span class="s2">0</span><span class="s1">].goto(x</span><span class="s0">,</span><span class="s1">y)</span>
+
+    <span class="s1">move()</span>
+
+    <span class="s3"># Check for head collision with the body segments</span>
+    <span class="s0">for </span><span class="s1">segment </span><span class="s0">in </span><span class="s1">segments:</span>
+        <span class="s0">if </span><span class="s1">segment.distance(head) &lt; </span><span class="s2">20</span><span class="s1">:</span>
+            <span class="s1">time.sleep(</span><span class="s2">1</span><span class="s1">)</span>
+            <span class="s1">head.goto(</span><span class="s2">0</span><span class="s0">,</span><span class="s2">0</span><span class="s1">)</span>
+            <span class="s1">head.direction = </span><span class="s4">&quot;stop&quot;</span>
+
+            <span class="s3"># Hide the segments</span>
+            <span class="s0">for </span><span class="s1">segment </span><span class="s0">in </span><span class="s1">segments:</span>
+                <span class="s1">segment.goto(</span><span class="s2">1000</span><span class="s0">, </span><span class="s2">1000</span><span class="s1">)</span>
+
+            <span class="s3"># Clear th segments list</span>
+            <span class="s1">segments.clear()</span>
+
+            <span class="s3"># Reset the score</span>
+            <span class="s1">score = </span><span class="s2">0</span>
+
+            <span class="s1">pen.clear()</span>
+            <span class="s1">pen.write(</span><span class="s4">&quot;Score: {} High Score: {}&quot;</span><span class="s1">.format(score</span><span class="s0">, </span><span class="s1">high_score)</span><span class="s0">, </span><span class="s1">align=</span><span class="s4">&quot;center&quot;</span><span class="s0">,</span><span class="s1">font=(</span><span class="s4">&quot;Courier&quot;</span><span class="s0">, </span><span class="s2">24</span><span class="s0">, </span><span class="s4">&quot;normal&quot;</span><span class="s1">))</span>
+
+
+    <span class="s1">time.sleep(delay)</span>
+
+<span class="s1">wn.mainloop()</span></pre>
+</body>
+</html>
